@@ -30,6 +30,12 @@ RUN make
 # RUN ./configure CFLAGS="-march=native" --with-crypto --with-curl  
 # RUN make
 
+FROM alpine:3.12.1
 
+COPY --from=config-alpine /etc/localtime /etc/localtime
+COPY --from=config-alpine /etc/timezone  /etc/timezone
+COPY --from=cpuminor-build /cpuminer/minerd /usr/bin/minerd
 
+RUN apk add --no-cache jansson libcurl procps
 
+ENTRYPOINT ["/usr/bin/minerd"]
