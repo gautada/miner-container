@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "+----------------------+"
+echo "|                      |"
+echo "| Test: miner          |"
+echo "|                      |"
+echo "+----------------------+"
+docker exec -i $1 pgrep -f minerd
