@@ -1,41 +1,26 @@
-FROM alpine:3.12.1 as config-alpine
+FROM ubuntu:20.04 AS xmrig-source
 
-RUN apk add --no-cache tzdata
+RUN apt-get update 
 
-RUN cp -v /usr/share/zoneinfo/America/New_York /etc/localtime
-RUN echo "America/New_York" > /etc/timezone
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y git \
+ build-essential cmake libuv1-dev libssl-dev libhwloc-dev 
 
-FROM alpine:3.12.1 as cpuminor-build
+RUN git clone https://github.com/xmrig/xmrig.git
 
-RUN apk add --no-cache autoconf \
-                       automake \
-                       build-base \
-                       git \
-                       curl-dev \
-                       gmp-dev \
-                       jansson-dev \
-                       libressl-dev 
+RUN mkdir /xmrig/build
 
-RUN git clone --depth 1 https://github.com/pooler/cpuminer.git
-WORKDIR /cpuminer
-RUN ./autogen.sh
-RUN ./configure CFLAGS="-O3"
-RUN make
+WORKDIR /xmrig/build
 
-# RUN git clone --depth 1 https://github.com/gautada/cpuminer-multi.git cpuminer
-# RUN git clone --branch linux --depth 1 https://github.com/gautada/cpuminer-multi.git
-# WORKDIR /cpuminer-multi
-#
-# RUN ./autogen.sh
-# RUN ./configure CFLAGS="-march=native" --with-crypto --with-curl  
-# RUN make
+RUN cmake .. && make
 
-FROM alpine:3.12.1
+FROM ubuntu:20.04
 
-COPY --from=config-alpine /etc/localtime /etc/localtime
-COPY --from=config-alpine /etc/timezone  /etc/timezone
-COPY --from=cpuminor-build /cpuminer/minerd /usr/bin/minerd
+RUN apt-get update
 
-RUN apk add --no-cache jansson libcurl procps
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y libhwloc15 openssl
 
-ENTRYPOINT ["/usr/bin/minerd"]
+COPY --from=xmrig-source /xmrig/build/xmrig /usr/bin/xmrig
+
+ENTRYPOINT ["/usr/bin/xmrig"]
+
+
