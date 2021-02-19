@@ -1,0 +1,14 @@
+≈#!/bin/bash
+export DOCKER_HOST=aarch64-docker.gautier.local
+docker build --tag miner:build .
+docker run -dit --rm  --name miner miner:build /usr/bin/xmrig --stress 
+docker exec miner /usr/bin/xmrig --version | head -n 1 | sed -e "s/ /-/g" | tr '[:upper:]' '[:lower:]'
+docker exec miner pgrep -f xmrig 
+docker stop miner
+
+export DOCKER_HOST=amd64-docker.gautier.local
+docker build --tag miner:build .
+docker run -dit --rm  --name miner miner:build /usr/bin/xmrig --stress 
+docker exec miner /usr/bin/xmrig --version | head -n 1 | sed -e "s/ /-/g" | tr '[:upper:]' '[:lower:]'
+docker exec miner pgrep -f xmrig 
+docker stop miner
