@@ -1,0 +1,11 @@
+#!/bin/sh
+echo "+-----------------------+"
+echo "| Installing MSR module |"
+echo "+-----------------------+"
+apt-get update 
+DEBIAN_FRONTEND="noninteractive" apt-get install -y msr-tools 
+if [ $? -eq 0 ] ; then
+ echo "SUCCESS"
+fi
+echo "+-----------------------+"
+
