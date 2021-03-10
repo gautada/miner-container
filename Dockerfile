@@ -47,7 +47,7 @@ RUN cmake .. && make
 FROM ubuntu:20.04
 EXPOSE 3333
 RUN apt-get update
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes libhwloc15 openssl
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes libhwloc15 openssl libcurl4
 COPY --from=xmrig-build /xmrig/build/xmrig /usr/bin/xmrig
 COPY --from=xmrig-build /xmrig/scripts/randomx_boost.sh /randomx_boost.sh
 COPY --from=proxy-build /xmrig-proxy/build/xmrig-proxy /usr/bin/xmrig-proxy
