@@ -1,2 +1,5 @@
 # Ignore Xcode files
 *.xcodeproj/
+cpuminer
+xmrig
+xmrig-proxy
