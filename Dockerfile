@@ -1,11 +1,13 @@
 FROM ubuntu:20.04 AS cpuminer-build
-ENV CPUMINER_BRANCH=v2.5.1
+# ENV CPUMINER_BRANCH=v2.5.1
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes autoconf automake build-essential \
- git libgmp-dev libjansson-dev libcurl4-openssl-dev 
-RUN git config --global advice.detachedHead false
-RUN git clone --branch=$CPUMINER_BRANCH --depth=1 https://github.com/pooler/cpuminer.git
+ libgmp-dev libjansson-dev libcurl4-openssl-dev
+# git
+# RUN git config --global advice.detachedHead false
+# RUN git clone --branch=$CPUMINER_BRANCH --depth=1 https://github.com/gautada/cpuminer.git
+COPY cpuminer /cpuminer
 WORKDIR /cpuminer
 RUN ./autogen.sh
 RUN ./configure CFLAGS="-O3"
@@ -15,13 +17,15 @@ RUN make
 
 
 FROM ubuntu:20.04 AS xmrig-build
-ENV XMRIG_BRANCH=v6.8.2
+# ENV XMRIG_BRANCH=v6.12.1
 
-RUN apt-get update 
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes git \
+RUN apt-get update
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes \
  build-essential cmake libuv1-dev libssl-dev libhwloc-dev
-RUN git config --global advice.detachedHead false 
-RUN git clone --branch=$XMRIG_BRANCH --depth=1 https://github.com/xmrig/xmrig.git
+# git
+# RUN git config --global advice.detachedHead false
+# RUN git clone --branch=$XMRIG_BRANCH --depth=1 https://github.com/gautada/xmrig.git
+COPY xmrig /xmrig
 RUN mkdir /xmrig/build
 WORKDIR /xmrig/build
 RUN cmake .. && make
@@ -30,13 +34,14 @@ RUN cmake .. && make
 
 
 FROM ubuntu:20.04 AS proxy-build
-ENV XMRIGPROXY_BRANCH=v6.4.0
+# ENV XMRIGPROXY_BRANCH=v6.12.0
 
 RUN apt-get update
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes git build-essential cmake \
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes build-essential cmake \
  libuv1-dev uuid-dev libmicrohttpd-dev libssl-dev
-RUN git config --global advice.detachedHead false
-RUN git clone --branch=$XMRIGPROXY_BRANCH --depth=1 https://github.com/xmrig/xmrig-proxy.git
+# RUN git config --global advice.detachedHead false
+# RUN git clone --branch=$XMRIGPROXY_BRANCH --depth=1 https://github.com/gautada/xmrig-proxy.git
+COPY xmrig-proxy /xmrig-proxy
 RUN mkdir /xmrig-proxy/build
 WORKDIR /xmrig-proxy/build
 RUN cmake .. && make
