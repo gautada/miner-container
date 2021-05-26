@@ -2,20 +2,21 @@
 export DOCKER_HOST=aarch64-docker.gautier.local
 docker build --tag miner:build . --no-cache
 docker run -dit --rm  --name miner miner:build /usr/bin/xmrig --stress 
-docker exec miner /usr/bin/xmrig --version | head -n 1 | sed -e "s/ /-/g" | tr '[:upper:]' '[:lower:]'
-docker exec miner pgrep -f xmrig 
+export VERSION=$(docker exec miner /usr/bin/xmrig --version | head -n 1 | sed -e "s/ /-/g" | tr '[:upper:]' '[:lower:]')
+docker exec miner pgrep -f xmrig
 docker stop miner
-docker tag miner:build gautada/miner:xmrig-3.8.2-arm
-docker push gautada/miner:xmrig-6.8.2-arm
+docker tag miner:build gautada/miner:$VERSION-arm
+docker push gautada/miner:$VERSION-arm
 
-# export DOCKER_HOST=amd64-docker.gautier.local
-# docker build --tag miner:build . --no-cache
-# docker run -dit --rm  --name miner miner:build /usr/bin/xmrig --stress
+export DOCKER_HOST=amd64-docker.gautier.local
+docker build --tag miner:build . --no-cache
+docker run -dit --rm  --name miner miner:build /usr/bin/xmrig --stress
 # docker exec miner /usr/bin/xmrig --version | head -n 1 | sed -e "s/ /-/g" | tr '[:upper:]' '[:lower:]'
-# docker exec miner pgrep -f xmrig
-# docker stop miner
-# docker tag miner:build gautada/miner:xmrig-3.8.2-x86
-# docker push gautada/miner:xmrig-6.8.2-x86
-#
-# docker manifest create gautada/miner:xmrig-6.8.2 --amend gautada/miner:xmrig-6.8.2-x86 --amend gautada/miner:xmrig-6.8.2-arm
-# docker manifest push gautada/miner:xmrig-6.8.2
+export VERSION=$(docker exec miner /usr/bin/xmrig --version | head -n 1 | sed -e "s/ /-/g" | tr '[:upper:]' '[:lower:]')
+docker exec miner pgrep -f xmrig
+docker stop miner
+docker tag miner:build gautada/miner:$VERSION-x86
+docker push gautada/miner:$VERSION-x86
+
+docker manifest create gautada/miner:$VERSION --amend gautada/miner:$VERSION-x86 --amend gautada/miner:$VERSION-arm
+docker manifest push gautada/miner:$VERSION

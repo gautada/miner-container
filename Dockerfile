@@ -35,7 +35,6 @@ RUN cmake .. && make
 
 FROM ubuntu:20.04 AS proxy-build
 # ENV XMRIGPROXY_BRANCH=v6.12.0
-
 RUN apt-get update
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes build-essential cmake \
  libuv1-dev uuid-dev libmicrohttpd-dev libssl-dev
